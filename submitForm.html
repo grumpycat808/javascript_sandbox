@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <form>
+      <label for="username">Username</label><br />
+      <input type="text" name="username" id="username_input" />
+      <span class="error_msg" id="username_input_validation"
+        >Username must be at least 4 characters and only contain letters or
+        numbers</span
+      >
+      <br />
+
+      <label for="email">Email:</label><br />
+      <input type="email" name="email" id="email_input" />
+      <span id="email_input_validation" class="error_msg"
+        >Email must be valid</span
+      >
+      <br /><br />
+
+      <label for="password">Password:</label><br />
+      <input type="text" name="password" id="password_input" /><span
+        class="error_msg"
+        id="password_input_validation"
+        >Passwords must be at least 6 characters long</span
+      ><br /><br />
+
+      <label for="password_confirmation">Password Confirmation:</label><br />
+      <input
+        type="text"
+        name="password_confirmation"
+        id="password_confirmation_input"
+      /><span class="error_msg" id="password_confirmation_input_validation"
+        >Passwords must match</span
+      ><br /><br />
+      <button id="submit_form">Sign Up</button>
+    </form>
+    <script src="src/submitForm.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $(".error_msg").addClass("hidden");
+        function isAlphaNumeric(str) {
+          var code, i, len;
+
+          for (i = 0, len = str.length; i < len; i++) {
+            code = str.charCodeAt(i);
+            if (
+              !(code > 47 && code < 58) && // numeric (0-9)
+              !(code > 64 && code < 91) && // upper alpha (A-Z)
+              !(code > 96 && code < 123)
+            ) {
+              // lower alpha (a-z)
+              return false;
+            }
+          }
+          return true;
+        }
+
+        const validateEmail = (email) => {
+          return String(email)
+            .toLowerCase()
+            .match(
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+        };
+
+        function validateForm() {
+          let formValid = true;
+          const errors = [];
+          const usernameInput = $("#username_input").val();
+          const emailValue = $("#email_input").val();
+          const passwordValue = $("#password_input").val();
+          const passwordConfirmationInput = $(
+            "#password_confirmation_input"
+          ).val();
+
+          if (usernameInput.length < 4 || !isAlphaNumeric(usernameInput)) {
+            formValid = false;
+            errors.push("#username_input_validation");
+          }
+          if (passwordValue.length < 6) {
+            formValid = false;
+            errors.push("#password_input_validation");
+          }
+          if (passwordValue !== passwordConfirmationInput) {
+            formValid = false;
+            errors.push("#password_confirmation_input_validation");
+          }
+
+          if (!validateEmail(emailValue)) {
+            formValid = false;
+            errors.push("#email_input_validation");
+          }
+          return {
+            valid: formValid,
+            errors,
+          };
+        }
+        $("#submit_form").on("click", (e) => {
+          e.preventDefault();
+          $(".error_msg").addClass("hidden");
+          const validation = validateForm();
+          if (validation.valid) {
+            submitForm();
+          } else {
+            validation.errors.forEach((error) => {
+              $(`${error}`).removeClass("hidden");
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

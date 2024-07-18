@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <!-- <link rel="stylesheet" href="src/style.css" /> -->
+    <style>
+      .my-element {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="my-element" id="my-element">Hello world</h1>
+  </body>
+  <script type="text/javascript">
+    window.onload = (event) => {
+      const animateCSS = (element, animation, prefix = "animate__") =>
+        // We create a Promise and return it
+        new Promise((resolve, reject) => {
+          const animationName = `${prefix}${animation}`;
+          const node = document.querySelector(element);
+          node.classList.add(`${prefix}animated`, animationName);
+          // When the animation ends, we clean the classes and resolve the Promise
+          function handleAnimationEnd(event) {
+            event.stopPropagation();
+            node.classList.remove(`${prefix}animated`, animationName);
+            resolve("Animation ended");
+          }
+          node.addEventListener("animationend", handleAnimationEnd, {
+            once: true,
+          });
+        });
+      $(".my-element").on("mouseenter", function () {
+        console.log("hovered");
+        animateCSS("#my-element", "bounce");
+      });
+    };
+  </script>
+</html>
